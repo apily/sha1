@@ -6,8 +6,8 @@ Component SHA1
 
 ## Credits
 
-Paul Johnston
-Greg Holt, Andrew Kepert, Ydnar, Lostinet
+Paul Johnston  
+Greg Holt, Andrew Kepert, Ydnar, Lostinet  
 Caolan McMahon
 
 ## License
