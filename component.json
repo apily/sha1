@@ -1,0 +1,17 @@
+{
+  "name": "component-sha1",
+  "repo": "apily/component-user",
+  "description": "Component SHA1",
+  "version": "0.0.1",
+  "keywords": [
+    "sha1",
+    "base64",
+    "crypto",
+    "hex"
+  ],
+  "scripts": [
+    "index.js"
+  ],
+  "dependencies": {},
+  "license": "MIT"
+}
