@@ -5,7 +5,7 @@
 /**
  * Configurable variables
  */
- 
+
 var hexcase = 0;   /* hex output format. 0 - lowercase; 1 - uppercase        */
 var b64pad  = "="; /* base-64 pad character. "=" for strict RFC compliance   */
 var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
@@ -13,7 +13,7 @@ var chrsz   = 8;   /* bits per input character. 8 - ASCII; 16 - Unicode      */
 /**
  * Perform a simple self-test to see if the VM is working
  */
- 
+
 var sha1_vm_test = function() {
   return hex_sha1("abc") == "a9993e364706816aba3e25717850c26c9cd0d89d";
 };
@@ -21,7 +21,7 @@ var sha1_vm_test = function() {
 /**
  * Calculate the SHA-1 of an array of big-endian words, and a bit length
  */
- 
+
 var core_sha1 = function(x, len) {
   /* append padding */
   x[len >> 5] |= 0x80 << (24 - len % 32);
@@ -33,7 +33,7 @@ var core_sha1 = function(x, len) {
   var c = -1732584194;
   var d =  271733878;
   var e = -1009589776;
-  
+
   var i;
   var j;
 
@@ -50,7 +50,7 @@ var core_sha1 = function(x, len) {
       } else {
         w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
       }
-      
+
       var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)), safe_add(safe_add(e, w[j]), sha1_kt(j)));
       e = d;
       d = c;
@@ -65,27 +65,27 @@ var core_sha1 = function(x, len) {
     d = safe_add(d, oldd);
     e = safe_add(e, olde);
   }
-  
+
   return Array(a, b, c, d, e);
-}
+};
 
 /**
- * Perform the appropriate triplet combination function 
+ * Perform the appropriate triplet combination function
  * for the current iteration
  */
- 
+
 var sha1_ft = function(t, b, c, d) {
   if(t < 20) return (b & c) | ((~b) & d);
   if(t < 40) return b ^ c ^ d;
   if(t < 60) return (b & c) | (b & d) | (c & d);
-  
+
   return b ^ c ^ d;
 };
 
 /**
  * Determine the appropriate additive constant for the current iteration
  */
- 
+
 var sha1_kt = function(t) {
   return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
          (t < 60) ? -1894007588 : -899497514;
@@ -94,7 +94,7 @@ var sha1_kt = function(t) {
 /**
  * Calculate the HMAC-SHA1 of a key and some data
  */
- 
+
 var core_hmac_sha1 = function(key, data) {
   var bkey = str2binb(key);
   if (bkey.length > 16) {
@@ -103,36 +103,36 @@ var core_hmac_sha1 = function(key, data) {
   var ipad = Array(16);
   var opad = Array(16);
   var i;
-  
+
   for (i = 0; i < 16; i += 1) {
     ipad[i] = bkey[i] ^ 0x36363636;
     opad[i] = bkey[i] ^ 0x5C5C5C5C;
   }
 
   var hash = core_sha1(ipad.concat(str2binb(data)), 512 + data.length * chrsz);
-  
+
   return core_sha1(opad.concat(hash), 512 + 160);
 };
 
 /**
- * Add integers, wrapping at 2^32. 
+ * Add integers, wrapping at 2^32.
  * This uses 16-bit operations internally to work around bugs in some JS interpreters.
  */
- 
+
 var safe_add = function(x, y) {
   var lsw = (x & 0xFFFF) + (y & 0xFFFF);
   var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-  
+
   return (msw << 16) | (lsw & 0xFFFF);
-}
+};
 
 /**
  * Bitwise rotate a 32-bit number to the left.
  */
- 
+
 var rol = function(num, cnt){
   return (num << cnt) | (num >>> (32 - cnt));
-}
+};
 
 /**
  * Convert an 8-bit or 16-bit string to an array of big-endian words
@@ -140,30 +140,30 @@ var rol = function(num, cnt){
  */
 
 var str2binb = function(str) {
-  var bin = Array();
+  var bin = [];
   var mask = (1 << chrsz) - 1;
   var i;
-  
+
   for(i = 0; i < str.length * chrsz; i += chrsz) {
     bin[i>>5] |= (str.charCodeAt(i / chrsz) & mask) << (32 - chrsz - i%32);
   }
-  
+
   return bin;
 };
 
 /**
  * Convert an array of big-endian words to a string
  */
- 
+
 var binb2str = function(bin) {
   var str = "";
   var mask = (1 << chrsz) - 1;
   var i;
-  
+
   for(i = 0; i < bin.length * 32; i += chrsz) {
     str += String.fromCharCode((bin[i>>5] >>> (32 - chrsz - i%32)) & mask);
   }
-  
+
   return str;
 };
 
@@ -174,25 +174,25 @@ var binb2hex = function(binarray) {
   var hex_tab = hexcase ? "0123456789ABCDEF" : "0123456789abcdef";
   var str = "";
   var i;
-  
+
   for(i = 0; i < binarray.length * 4; i += 1) {
     str += hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8+4)) & 0xF) +
            hex_tab.charAt((binarray[i>>2] >> ((3 - i%4)*8  )) & 0xF);
   }
-  
+
   return str;
 };
 
 /**
  * Convert an array of big-endian words to a base-64 string
  */
- 
+
 var binb2b64 = function(binarray) {
   var tab = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   var str = "";
   var i;
   var j;
-  
+
   for(i = 0; i < binarray.length * 4; i += 3) {
     var triplet = (((binarray[i   >> 2] >> 8 * (3 -  i   %4)) & 0xFF) << 16)
                 | (((binarray[i+1 >> 2] >> 8 * (3 - (i+1)%4)) & 0xFF) << 8 )
@@ -205,7 +205,7 @@ var binb2b64 = function(binarray) {
       }
     }
   }
-  
+
   return str;
 };
 
@@ -251,7 +251,7 @@ exports.str = function(s) {
 
 /**
  * hex_hmac
- * Calculates the HMAC-SHA1 of a key and some data, 
+ * Calculates the HMAC-SHA1 of a key and some data,
  * returning a hex representation of it.
  *
  * @param {String} key
@@ -266,7 +266,7 @@ exports.hex_hmac = function(key, data) {
 
 /**
  * base64_hmac
- * Calculates the HMAC-SHA1 of a key and some data, 
+ * Calculates the HMAC-SHA1 of a key and some data,
  * returning a base64 representation of it.
  *
  * @param {String} key
@@ -290,6 +290,6 @@ exports.base64_hmac = function(key, data) {
  * @api public
  */
 
-exports.str_hmac = function(key, data) { 
+exports.str_hmac = function(key, data) {
   return binb2str(core_hmac_sha1(key, data));
 };
