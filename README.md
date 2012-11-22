@@ -1,7 +1,6 @@
-# component-sha1
+# client-sha1
 
-
-Component SHA1
+Client SHA1
 
 
 ## Credits
