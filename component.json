@@ -1,6 +1,6 @@
 {
-  "name": "client-sha1",
-  "repo": "apily/client-sha1",
+  "name": "sha1",
+  "repo": "apily/sha1",
   "description": "Component SHA1",
   "version": "0.0.1",
   "keywords": [
